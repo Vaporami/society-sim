@@ -37,7 +37,6 @@ internal class Person
             Dictionary<string, double> innerDict = new();
             Person._emotionsCoeffsDict.Add(emotion, innerDict)
         }
-        // TODO: как-то надо заполнить словарь _emotionsCoeffsDict используя Emotions.json
     }
         
     public Person(string name = "UNNAMED", int age = 18)
