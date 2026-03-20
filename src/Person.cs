@@ -1,12 +1,14 @@
 using System.Text.Json;
+using System.Text;
 namespace society_sim;
 
 internal class Person
 {
     static private int _lastId = -1;
 
-    static private List<string> _emotions;
-    static private Dictionary<string, Dictionary<string, double>> _emotionsCoeffsDict;
+    static private Dictionary<string, int> _emotions = new();
+    static private Dictionary<string, Dictionary<string, double>> _emotionsCoeffsDict = new();
+    static private bool _isInitialized = false;
 
     private int _id;
     private string _name;
@@ -19,11 +21,13 @@ internal class Person
         this._age = age;
     }
 
-    static private void InitStaticPerson(string pathToEmotionsJSON)
+    static public void InitStaticPerson(string pathToEmotionsJSON)
     {
-        Person._emotions = new List<string>();
-        Person._emotionsCoeffsDict =
-            new Dictionary<string, Dictionary<string, double>>(Person._emotions.Count);
+        if (Person._isInitialized)
+        {
+            Console.WriteLine("The \"Person\" class was already initialized!");
+            return;
+        }
         
         string text = string.Empty;
         using (StreamReader reader = new(pathToEmotionsJSON))
@@ -42,7 +46,7 @@ internal class Person
         
         foreach (JsonElement el in emotions.EnumerateArray())
         {
-            _emotions.Add(el.GetString());
+            _emotions.Add(el.GetString() ?? "NO_EMOTION", 0);
         }
 
         JsonElement coeffs = root.GetProperty("CoeffsDict");
@@ -55,17 +59,24 @@ internal class Person
             }
             _emotionsCoeffsDict.Add(el.Name, innerDict);
         }
+        Person._isInitialized = true;
+    }
+
+    static public string CoeffsToString()
+    {
+        StringBuilder ret = new();
+        foreach (KeyValuePair<string, Dictionary<string, double>> pair in Person._emotionsCoeffsDict)
+        {
+            ret.Append($"{pair.Key}: {{\n");
+            foreach (KeyValuePair<string, double> innerPair in pair.Value)
+                ret.Append($"    {innerPair.Key}: {innerPair.Value}\n");
+            ret.Append("}\n");
+        }
+        return ret.ToString();
     }
 
     public override string ToString()
     {
-        return $"[{this._id} {this._name} {this._age}]";
+        return $"[{this._id} {this._name} {this._age} {Person._emotions.Count}]";
     }
 }
-
-
-
-
-
-
-
