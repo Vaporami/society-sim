@@ -46,13 +46,14 @@ internal class Person
         }
 
         JsonElement coeffs = root.GetProperty("CoeffsDict");
-        foreach (JsonElement el in coeffs.EnumerateObject())
+        foreach (JsonProperty el in coeffs.EnumerateObject())
         {
             Dictionary<string, double> innerDict = new();
-            foreach (JsonElement innerEl in el.EnumerateObject())
+            foreach (JsonProperty innerEl in el.Value.EnumerateObject())
             {
-                // innerDict.Add(innerEl
+                innerDict.Add(innerEl.Name, innerEl.Value.GetDouble());
             }
+            _emotionsCoeffsDict.Add(el.Name, innerDict);
         }
     }
 
