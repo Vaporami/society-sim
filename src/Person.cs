@@ -1,23 +1,41 @@
 using System.Text.Json;
+using System.Text;
 namespace society_sim;
 
 internal class Person
 {
     static private int _lastId = -1;
-    static List<string> _emotions;
-    static private Dictionary<string, Dictionary<string, double>> _emotionsCoeffsDict;
+
+    static private Dictionary<string, int> _emotions = new();
+    static private Dictionary<string, Dictionary<string, double>> _emotionsCoeffsDict = new();
+    static private bool _isInitialized = false;
 
     private int _id;
     private string _name;
     private int _age;
-
-    static private void InitStaticPerson(string pathToEmotionsJSON)
+    
+    public Person(string name = "UNNAMED", int age = 18)
     {
+        this._id = ++Person._lastId;
+        this._name = name;
+        this._age = age;
+    }
+
+    static public void InitStaticPerson(string pathToEmotionsJSON)
+    {
+        if (Person._isInitialized)
+        {
+            Console.WriteLine("The \"Person\" class was already initialized!");
+            return;
+        }
+        
         string text = string.Empty;
         using (StreamReader reader = new(pathToEmotionsJSON))
+        {
             text = reader.ReadToEnd();
+        }
         JsonDocument json = JsonDocument.Parse(text);
-        JsonElement root = JsonDocument.RootElement;
+        JsonElement root = json.RootElement;
 
         JsonElement emotions = root.GetProperty("Emotions");
         if (emotions.ValueKind != JsonValueKind.Array)
@@ -26,29 +44,39 @@ internal class Person
             return;
         }
         
-        foreach (string val in emotions.Item)
+        foreach (JsonElement el in emotions.EnumerateArray())
         {
-            _emotions.Add(val);
+            _emotions.Add(el.GetString() ?? "NO_EMOTION", 0);
         }
 
         JsonElement coeffs = root.GetProperty("CoeffsDict");
-        foreach (string emotion in Person._emotions)
+        foreach (JsonProperty el in coeffs.EnumerateObject())
         {
             Dictionary<string, double> innerDict = new();
-            Person._emotionsCoeffsDict.Add(emotion, innerDict)
+            foreach (JsonProperty innerEl in el.Value.EnumerateObject())
+            {
+                innerDict.Add(innerEl.Name, innerEl.Value.GetDouble());
+            }
+            _emotionsCoeffsDict.Add(el.Name, innerDict);
         }
+        Person._isInitialized = true;
     }
-        
-    public Person(string name = "UNNAMED", int age = 18)
+
+    static public string CoeffsToString()
     {
-        this._id = ++Person._lastId;
-        this._name = name;
-        this._age = age;
+        StringBuilder ret = new();
+        foreach (KeyValuePair<string, Dictionary<string, double>> pair in Person._emotionsCoeffsDict)
+        {
+            ret.Append($"{pair.Key}: {{\n");
+            foreach (KeyValuePair<string, double> innerPair in pair.Value)
+                ret.Append($"    {innerPair.Key}: {innerPair.Value}\n");
+            ret.Append("}\n");
+        }
+        return ret.ToString();
     }
 
     public override string ToString()
     {
-        return $"[{this._id} {this._name} {this._age}]";
+        return $"[{this._id} {this._name} {this._age} {Person._emotions.Count}]";
     }
 }
-
