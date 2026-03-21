@@ -2,10 +2,14 @@
 
 class Program
 {
-    static void Main(string[] args)
+    static void Init()
     {
         Person.InitStaticPerson("src/Emotions.json");
-        Person.InitStaticPerson("src/Emotions.json");
+    }
+    static void Main(string[] args)
+    {
+        Program.Init();
+        
         List<Person> persons = new();
         for(int i = 0; i < 5; i++)
         {

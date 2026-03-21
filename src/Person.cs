@@ -1,24 +1,36 @@
 using System.Text.Json;
 using System.Text;
+using Utilities;
 namespace society_sim;
 
 internal class Person
 {
     static private int _lastId = -1;
-
-    static private Dictionary<string, int> _emotions = new();
+    static private List<string> _allEmotions = new();
     static private Dictionary<string, Dictionary<string, double>> _emotionsCoeffsDict = new();
     static private bool _isInitialized = false;
 
     private int _id;
-    private string _name;
+    private string? _name;
     private int _age;
+    private Dictionary<string, int> _emotionsDict = new();    
     
     public Person(string name = "UNNAMED", int age = 18)
     {
+        if (!_isInitialized)
+        {
+            Console.WriteLine("Initialize the static fields first.");
+            return;
+        }
         this._id = ++Person._lastId;
+        if (name == "UNNAMED")
+        {
+            
+        }
         this._name = name;
         this._age = age;
+        foreach (string emotion in Person._allEmotions)
+            this._emotionsDict.Add(emotion, 0);            
     }
 
     static public void InitStaticPerson(string pathToEmotionsJSON)
@@ -29,14 +41,7 @@ internal class Person
             return;
         }
         
-        string text = string.Empty;
-        using (StreamReader reader = new(pathToEmotionsJSON))
-        {
-            text = reader.ReadToEnd();
-        }
-        JsonDocument json = JsonDocument.Parse(text);
-        JsonElement root = json.RootElement;
-
+        JsonElement root = JsonUtils.GetRootFromFile(pathToEmotionsJSON);
         JsonElement emotions = root.GetProperty("Emotions");
         if (emotions.ValueKind != JsonValueKind.Array)
         {
@@ -46,7 +51,7 @@ internal class Person
         
         foreach (JsonElement el in emotions.EnumerateArray())
         {
-            _emotions.Add(el.GetString() ?? "NO_EMOTION", 0);
+            Person._allEmotions.Add(el.GetString() ?? "NOT_EMOTION");
         }
 
         JsonElement coeffs = root.GetProperty("CoeffsDict");
@@ -75,8 +80,15 @@ internal class Person
         return ret.ToString();
     }
 
+    public void AddToEmotion(string emotion, int value)
+    {
+        this._emotionsDict[emotion] += value;
+        foreach (KeyValuePair<string, double> pair in _emotionsCoeffsDict[emotion])
+            this._emotionsDict[pair.Key] += (int)(value * pair.Value);
+    }
+
     public override string ToString()
     {
-        return $"[{this._id} {this._name} {this._age} {Person._emotions.Count}]";
+        return $"[{this._id} {this._name} {this._age} {this._emotionsDict.Count}]";
     }
 }
