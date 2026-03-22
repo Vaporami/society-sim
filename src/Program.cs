@@ -1,22 +1,32 @@
-﻿namespace society_sim;
+﻿using Utilities;
+
+namespace society_sim;
 
 class Program
 {
     static void Init()
     {
-        Person.InitStaticPerson("src/Emotions.json");
+        Person.InitStaticPerson("src/jsons/Emotions.json", "src/jsons/Names.json");
     }
+
+    static void PrintPersonGroup(List<Person> persons)
+    {
+        foreach(Person p in persons)
+            Console.WriteLine(p.ToString());
+    }
+    
     static void Main(string[] args)
     {
         Program.Init();
-        
-        List<Person> persons = new();
-        for(int i = 0; i < 5; i++)
+        int amount = int.Parse(IO.Input("Enter the size of the group: "));
+        List<Person> persons = new(amount);
+        for(int i = 0; i < amount; i++)
         {
             var p = new Person();
             persons.Add(p);
-            Console.WriteLine(p.ToString());
         }
-        Console.WriteLine(Person.CoeffsToString());
+        foreach(Person p in persons)
+            p.AddToEmotion("Joy", Random.Shared.Next(99));
+        PrintPersonGroup(persons);
     }
 }

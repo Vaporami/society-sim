@@ -33,7 +33,7 @@ internal class Person
             this._emotionsDict.Add(emotion, 0);            
     }
 
-    static public void InitStaticPerson(string pathToEmotionsJSON)
+    static public void InitStaticPerson(string pathToEmotionsJSON, string pathToNamesJSON)
     {
         if (Person._isInitialized)
         {
@@ -89,6 +89,18 @@ internal class Person
 
     public override string ToString()
     {
-        return $"[{this._id} {this._name} {this._age} {this._emotionsDict.Count}]";
+        StringBuilder str = new();
+        str.Append("[");
+
+        str.Append($"{this._id} ");
+        str.Append($"{this._name} ");
+        str.Append($"{this._age} ");
+        str.Append($"{this._emotionsDict.Count} ");
+        str.Append($"{this._emotionsDict["Joy"]} ");
+        str.Append($"{this._emotionsDict["Anger"]} ");
+        str.Append($"{this._emotionsDict["Sadness"]}");
+        
+        str.Append("]");
+        return str.ToString();
     }
 }
