@@ -1,0 +1,11 @@
+bin/
+obj/
+*.json
+src/*.json
+src/jsons/*.json
+*~
+src/*~
+#*
+.#*
+src/#*
+src/.#*
