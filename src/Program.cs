@@ -9,24 +9,13 @@ class Program
         Person.InitStaticPerson("src/jsons/Emotions.json", "src/jsons/Names.json");
     }
 
-    static void PrintPersonGroup(List<Person> persons)
-    {
-        foreach(Person p in persons)
-            Console.WriteLine(p.ToString());
-    }
-    
     static void Main(string[] args)
     {
-        Program.Init();
+        Init();
         int amount = int.Parse(IO.Input("Enter the size of the group: "));
-        List<Person> persons = new(amount);
-        for(int i = 0; i < amount; i++)
-        {
-            var p = new Person();
-            persons.Add(p);
-        }
-        foreach(Person p in persons)
+        PersonGroup humanity = new(amount, true);
+        foreach(Person p in humanity.Group)
             p.AddToEmotion("Joy", Random.Shared.Next(99));
-        PrintPersonGroup(persons);
+        Console.WriteLine(humanity.ToString());
     }
 }

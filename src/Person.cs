@@ -14,7 +14,13 @@ internal class Person
     private int _id;
     private string? _name;
     private int _age;
-    private Dictionary<string, int> _emotionsDict = new();    
+    private Dictionary<string, int> _emotionsDict;
+    
+    private List<PersonGroup> _belongsToList;
+    public List<PersonGroup> BelongsToList
+    {
+        get { return this._belongsToList; }
+    }
     
     public Person(string name = "UNNAMED", int age = 18)
     {
@@ -23,13 +29,20 @@ internal class Person
             Console.WriteLine("Initialize the static fields first.");
             return;
         }
+        
         this._id = ++Person._lastId;
+        
         this._name = name;
         if(this._name == "UNNAMED")
             this._name = Person._names[Random.Shared.Next(Person._names.Count)];
+        
         this._age = age;
+        
+        this._emotionsDict = new(Person._allEmotions.Count);
         foreach (string emotion in Person._allEmotions)
-            this._emotionsDict.Add(emotion, 0);            
+            this._emotionsDict.Add(emotion, 0);
+
+        this._belongsToList = new();
     }
 
     static public void InitStaticPerson(string pathToEmotionsJSON, string pathToNamesJSON)
@@ -64,7 +77,7 @@ internal class Person
         JsonElement names = root.GetProperty("Names");
         foreach(JsonElement el in names.EnumerateArray())
         {
-            string elstr = el.GetString();
+            string? elstr = el.GetString();
             if(!string.IsNullOrEmpty(elstr)) Person._names.Add(elstr);
         }
         Person._isInitialized = true;   
