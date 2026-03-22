@@ -8,6 +8,7 @@ internal class Person
     static private int _lastId = -1;
     static private List<string> _allEmotions = new();
     static private Dictionary<string, Dictionary<string, double>> _emotionsCoeffsDict = new();
+    static private List<string> _names = new();
     static private bool _isInitialized = false;
 
     private int _id;
@@ -23,11 +24,9 @@ internal class Person
             return;
         }
         this._id = ++Person._lastId;
-        if (name == "UNNAMED")
-        {
-            
-        }
         this._name = name;
+        if(this._name == "UNNAMED")
+            this._name = Person._names[Random.Shared.Next(Person._names.Count)];
         this._age = age;
         foreach (string emotion in Person._allEmotions)
             this._emotionsDict.Add(emotion, 0);            
@@ -50,21 +49,25 @@ internal class Person
         }
         
         foreach (JsonElement el in emotions.EnumerateArray())
-        {
             Person._allEmotions.Add(el.GetString() ?? "NOT_EMOTION");
-        }
 
         JsonElement coeffs = root.GetProperty("CoeffsDict");
         foreach (JsonProperty el in coeffs.EnumerateObject())
         {
             Dictionary<string, double> innerDict = new();
             foreach (JsonProperty innerEl in el.Value.EnumerateObject())
-            {
                 innerDict.Add(innerEl.Name, innerEl.Value.GetDouble());
-            }
             _emotionsCoeffsDict.Add(el.Name, innerDict);
         }
-        Person._isInitialized = true;
+
+        root = JsonUtils.GetRootFromFile(pathToNamesJSON);
+        JsonElement names = root.GetProperty("Names");
+        foreach(JsonElement el in names.EnumerateArray())
+        {
+            string elstr = el.GetString();
+            if(!string.IsNullOrEmpty(elstr)) Person._names.Add(elstr);
+        }
+        Person._isInitialized = true;   
     }
 
     static public string CoeffsToString()
