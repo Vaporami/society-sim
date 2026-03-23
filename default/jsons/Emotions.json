@@ -1,0 +1,15 @@
+{
+  "Emotions": ["Joy", "Anger", "Sadness"],
+  "CoeffsDict": {
+    "Joy": {
+      "Anger": -0.5,
+      "Sadness": -0.5
+    },
+    "Anger": {
+      "Joy": -1.0
+    },
+    "Sadness": {
+      "Joy": -1.0
+    }
+  }
+}

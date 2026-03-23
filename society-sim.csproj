@@ -1,10 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-      <Compile Remove="external/**/*.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="external\Utilities\utilities.csproj" />
   </ItemGroup>
   

@@ -6,7 +6,7 @@ class Program
 {
     static void Init()
     {
-        Person.InitStaticPerson("src/jsons/Emotions.json", "src/jsons/Names.json");
+        Person.InitStaticPerson("sim-settings/Emotions.json", "sim-settings/Names.json");
     }
 
     static void Main(string[] args)

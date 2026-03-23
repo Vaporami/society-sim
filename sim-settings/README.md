@@ -1,0 +1,1 @@
+These files in this exact directory are used by default to get the settings of the simulation. You can get the original copies of those files from the "default" directory in the root directory of this repo. 
