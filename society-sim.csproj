@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\utilities\utilities.csproj" />
+      <Compile Remove="external/**/*.cs" />
   </ItemGroup>
 
   <ItemGroup>
-      <Compile Remove="external/**/*.cs"/>
+    <ProjectReference Include="external\Utilities\utilities.csproj" />
   </ItemGroup>
   
   <PropertyGroup>
