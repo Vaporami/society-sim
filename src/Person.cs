@@ -5,6 +5,9 @@ namespace society_sim;
 
 internal class Person
 {
+    internal class Action
+    {}
+    
     static private int _lastId = -1;
     static private List<string> _allEmotions = new();
     static private Dictionary<string, Dictionary<string, double>> _emotionsCoeffsDict = new();
