@@ -14,16 +14,11 @@ internal class PersonGroup
         get { return this._group; }
         set { this._group = value; }
     }
-
-    private void GetNewId()
-    {
-        this._id = ++PersonGroup._lastId;
-    }
     
     public PersonGroup()
     {
         this._group = new();
-        GetNewId();
+        ++PersonGroup._lastId;
     }
     
     public PersonGroup(List<Person> group)
@@ -31,7 +26,7 @@ internal class PersonGroup
         this._group = group;
         foreach (Person p in group)
             p.BelongsToList.Add(this);
-        GetNewId();
+        ++PersonGroup._lastId;
     }
 
     public PersonGroup(Person[] group)
@@ -39,7 +34,7 @@ internal class PersonGroup
         this._group = new(group.Length);
         foreach (Person p in group)
             this.AddPerson(p);
-        GetNewId();
+        ++PersonGroup._lastId;
     }
 
     public PersonGroup(int capacity, bool createPersons = false)
@@ -47,13 +42,13 @@ internal class PersonGroup
         if(!createPersons)
         {
             this._group = new(capacity);
-            GetNewId();
+            ++PersonGroup._lastId;
             return;
         }
         this._group = new(capacity);
         for (int i = 0; i < capacity; i++)
             this.AddPerson(new Person());
-        GetNewId();
+        ++PersonGroup._lastId;
     }
 
     public void AddPerson(Person p)
