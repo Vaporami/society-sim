@@ -29,7 +29,7 @@ internal class Person
     {
         if (!_isInitialized)
         {
-            Console.WriteLine("Initialize the static fields first.");
+            IO.Output("Initialize the static fields first.");
             return;
         }
         
@@ -52,7 +52,7 @@ internal class Person
     {
         if (Person._isInitialized)
         {
-            Console.WriteLine("The \"Person\" class was already initialized!");
+            IO.Output("The \"Person\" class was already initialized!");
             return;
         }
         
@@ -60,7 +60,7 @@ internal class Person
         JsonElement emotions = root.GetProperty("Emotions");
         if (emotions.ValueKind != JsonValueKind.Array)
         {
-            Console.WriteLine("\"Emotions\" is not an array!");
+            IO.Output("\"Emotions\" is not an array!");
             return;
         }
         

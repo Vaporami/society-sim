@@ -16,6 +16,6 @@ class Program
         PersonGroup humanity = new(amount, true);
         foreach(Person p in humanity.Group)
             p.AddToEmotion("Joy", Random.Shared.Next(99));
-        Console.WriteLine(humanity.ToString());
+        IO.Output(humanity.ToString());
     }
 }
