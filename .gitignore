@@ -1,5 +1,6 @@
 bin/
 obj/
+dotnet-tools.json
 *~
 src/*~
 #*
